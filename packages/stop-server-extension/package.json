@@ -1,5 +1,5 @@
 {
-    "name": "jupyterlab-stop-server",
+    "name": "jupyterlab-topbar-stop-server",
     "version": "1.1.0",
     "description": "JupyterLab Stop Server Button",
     "keywords": [
@@ -38,7 +38,7 @@
         "build:prod": "jlpm clean && jlpm build:lib:prod && jlpm build:labextension",
         "clean": "jlpm clean:lib",
         "clean:all": "jlpm clean:lib && jlpm clean:labextension && jlpm clean:lintcache",
-        "clean:labextension": "rimraf jupyterlab_stop_server/labextension jupyterlab_stop_server/_version.py",
+        "clean:labextension": "rimraf jupyterlab_topbar_stop_server/labextension jupyterlab_topbar_stop_server/_version.py",
         "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
         "clean:lintcache": "rimraf .eslintcache .stylelintcache",
         "eslint": "jlpm eslint:check --fix",
@@ -81,7 +81,7 @@
     "jupyterlab": {
         "extension": true,
         "schemaDir": "schema",
-        "outputDir": "jupyterlab_stop_server/labextension"
+        "outputDir": "jupyterlab_topbar_stop_server/labextension"
     },
     "publishConfig": {
         "access": "public"

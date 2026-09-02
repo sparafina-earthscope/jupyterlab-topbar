@@ -7,9 +7,9 @@ node_modules/
 *.egg-info/
 .ipynb_checkpoints
 *.tsbuildinfo
-jupyterlab_stop_server/labextension
+jupyterlab_topbar_stop_server/labextension
 # Version file is handled by hatchling
-jupyterlab_stop_server/_version.py
+jupyterlab_topbar_stop_server/_version.py
 
 # Yarn cache
 .yarn/

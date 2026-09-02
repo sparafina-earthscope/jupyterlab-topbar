@@ -1,4 +1,4 @@
-# jupyterlab-stop-server
+# jupyterlab-topbar-stop-server
 
 Stop Server button for JupyterLab, for use under [JupyterHub](https://jupyterhub.readthedocs.io/).
 
@@ -6,15 +6,16 @@ Adds a "Stop Server" button to the top bar that stops the user's server the
 same way the Hub Control Panel's "Stop My Server" button does, then sends the
 user back to the Hub Control Panel.
 
-The button only appears when running under JupyterHub (i.e. when the
-`hub_prefix` page config option is set).
+The button is always shown, but only does something when running under
+JupyterHub (i.e. when the `hub_prefix` page config option is set) — otherwise
+it logs a console warning and does nothing.
 
 ## Installation
 
 ### JupyterLab 4.x
 
 ```bash
-pip install jupyterlab-stop-server
+pip install jupyterlab-topbar-stop-server
 ```
 
 ## Contributing
@@ -29,7 +30,7 @@ The `jlpm` command is JupyterLab's pinned version of
 
 ```bash
 # Clone the repo to your local environment
-# Change directory to the jupyterlab-stop-server directory
+# Change directory to the jupyterlab-topbar-stop-server directory
 # Install package in development mode
 pip install -e .
 # Link your development version of the extension with JupyterLab
@@ -58,5 +59,5 @@ jupyter lab build --minimize=False
 ### Uninstall
 
 ```bash
-pip uninstall jupyterlab-stop-server
+pip uninstall jupyterlab-topbar-stop-server
 ```

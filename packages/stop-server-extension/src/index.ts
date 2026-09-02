@@ -9,13 +9,13 @@ import '@jupyterlab/application/style/buttons.css';
 
 import '../style/index.css';
 
-const stopServerPluginId = 'jupyterlab-stop-server:plugin';
+const stopServerPluginId = 'jupyterlab-topbar-stop-server:plugin';
 
 const extension: JupyterFrontEndPlugin<void> = {
   id: stopServerPluginId,
   autoStart: true,
   activate: async (app: JupyterFrontEnd): Promise<void> => {
-    console.log('jupyterlab-stop-server extension is activated!');
+    console.log('jupyterlab-topbar-stop-server extension is activated!');
 
     // Get app commands
     const { commands } = app;
@@ -33,7 +33,7 @@ const extension: JupyterFrontEndPlugin<void> = {
 
         if (!hubPrefix) {
           console.warn(
-            'jupyterlab-stop-server: not running under the JupyterHub Control Panel, hub_prefix is not set.'
+            'jupyterlab-topbar-stop-server: not running under the JupyterHub Control Panel, hub_prefix is not set.'
           );
           return;
         }
@@ -52,7 +52,7 @@ const extension: JupyterFrontEndPlugin<void> = {
 
         if (!response.ok && response.status !== 202) {
           console.error(
-            `jupyterlab-stop-server: failed to stop the server (${response.status} ${response.statusText}).`
+            `jupyterlab-topbar-stop-server: failed to stop the server (${response.status} ${response.statusText}).`
           );
         }
 
