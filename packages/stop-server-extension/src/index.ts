@@ -25,7 +25,6 @@ const extension: JupyterFrontEndPlugin<void> = {
 
     commands.addCommand(command, {
       label: 'Stop Server',
-      isVisible: () => !!PageConfig.getOption('hub_prefix'),
       execute: async (args: any) => {
         const hubHost = PageConfig.getOption('hub_host');
         const hubPrefix = PageConfig.getOption('hub_prefix');
