@@ -13,7 +13,7 @@
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
     "install-ext": "lerna run build:labextension:dev",
-    "install-py": "lerna exec --concurrency 4 -- python -m pip install -e .",
+    "install-py": "lerna exec --concurrency 1 -- python -m pip install -e .",
     "lint": "jlpm && jlpm prettier && jlpm eslint && jlpm stylelint",
     "lint:check": "jlpm prettier:check && jlpm eslint:check && jlpm stylelint:check",
     "prettier": "prettier --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}\"",
