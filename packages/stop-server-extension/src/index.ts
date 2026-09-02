@@ -25,39 +25,19 @@ const extension: JupyterFrontEndPlugin<void> = {
 
     commands.addCommand(command, {
       label: 'Stop Server',
-      execute: async (args: any) => {
+      execute: (args: any) => {
         const hubHost = PageConfig.getOption('hub_host');
         const hubPrefix = PageConfig.getOption('hub_prefix');
-        const hubUser = PageConfig.getOption('hub_user');
-        const hubServerName = PageConfig.getOption('hub_server_name');
 
         if (!hubPrefix) {
           console.warn(
-            'jupyterlab-topbar-stop-server: not running under the JupyterHub Control Panel, hub_prefix is not set.'
+            'jupyterlab-topbar-stop-server: not running under JupyterHub, hub_prefix is not set.'
           );
           return;
         }
 
-        // Mirror the JupyterHub Control Panel "Stop My Server" action:
-        // https://api.jupyterhub.org - DELETE /users/{name}/server
-        const serverPath = hubServerName
-          ? URLExt.join('api/users', hubUser, 'servers', hubServerName)
-          : URLExt.join('api/users', hubUser, 'server');
-        const stopUrl = hubHost + URLExt.join(hubPrefix, serverPath);
-
-        const response = await fetch(stopUrl, {
-          method: 'DELETE',
-          credentials: 'same-origin',
-        });
-
-        if (!response.ok && response.status !== 202) {
-          console.error(
-            `jupyterlab-topbar-stop-server: failed to stop the server (${response.status} ${response.statusText}).`
-          );
-        }
-
-        // Send the user back to the Hub Control Panel, same as clicking
-        // "Hub Control Panel" would.
+        // Send the user to the Hub Control Panel, where JupyterHub's own
+        // "Stop My Server" button lives.
         window.location.href = hubHost + URLExt.join(hubPrefix, 'home');
       },
     });

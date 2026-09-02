@@ -2,9 +2,8 @@
 
 Stop Server button for JupyterLab, for use under [JupyterHub](https://jupyterhub.readthedocs.io/).
 
-Adds a "Stop Server" button to the top bar that stops the user's server the
-same way the Hub Control Panel's "Stop My Server" button does, then sends the
-user back to the Hub Control Panel.
+Adds a "Stop Server" button to the top bar that navigates to the JupyterHub
+Control Panel, where JupyterHub's own "Stop My Server" button lives.
 
 The button is always shown, but only does something when running under
 JupyterHub (i.e. when the `hub_prefix` page config option is set) — otherwise
