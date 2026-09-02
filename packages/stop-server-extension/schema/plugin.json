@@ -1,0 +1,16 @@
+{
+  "title": "User Menu Bar",
+  "description": "User Menu Bar settings.",
+  "jupyter.lab.toolbars": {
+    "TopBar": [
+      {
+        "name": "stop-server",
+        "command": "jupyterlab-topbar:stop-server",
+        "rank": 140
+      }
+    ]
+  },
+  "properties": {},
+  "additionalProperties": false,
+  "type": "object"
+}

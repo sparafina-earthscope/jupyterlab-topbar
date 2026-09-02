@@ -17,6 +17,7 @@ Inspired by Gnome Shell Top Bar indicators.
 
 - [jupyterlab-topbar-text](./packages/topbar-text-extension): add and edit custom text
 - [jupyterlab-logout](./packages/logout-extension): add a "Log Out" button
+- [jupyterlab-stop-server](./packages/stop-server-extension): add a "Stop Server" button that stops the server via the JupyterHub Control Panel
 - [jupyterlab-theme-toggle](./packages/theme-toggler-extension): switch between the Light and Dark themes
 
 ## Try it online
@@ -39,6 +40,9 @@ pip install jupyterlab-topbar-text
 
 # logout extension
 pip install jupyterlab-logout
+
+# stop server extension
+pip install jupyterlab-stop-server
 
 # theme toggler extension
 pip install jupyterlab-theme-toggler
@@ -132,5 +136,5 @@ jupyter lab build --minimize=False
 ### Uninstall
 
 ```bash
-pip uninstall jupyterlab_topbar_text jupyterlab_logout jupyterlab_theme_toggler
+pip uninstall jupyterlab_topbar_text jupyterlab_logout jupyterlab_stop_server jupyterlab_theme_toggler
 ```
