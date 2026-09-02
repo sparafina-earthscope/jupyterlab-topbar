@@ -2,7 +2,7 @@
 
 [![Extension status](https://img.shields.io/badge/status-ready-success 'ready to be used')](https://jupyterlab-contrib.github.io/)
 [![Github Actions Status](https://github.com/jupyterlab-contrib/jupyterlab-topbar/workflows/Build/badge.svg)](https://github.com/jupyterlab-contrib/jupyterlab-topbar/actions/workflows/build.yml)
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab-contrib/jupyterlab-topbar/main?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/sparafina-earthscope/jupyterlab-topbar/main?urlpath=lab)
 [![PyPI](https://img.shields.io/pypi/v/jupyterlab-topbar.svg)](https://pypi.org/project/jupyterlab-topbar)
 
 Monorepo to experiment with the top bar space in JupyterLab.
@@ -24,7 +24,7 @@ Inspired by Gnome Shell Top Bar indicators.
 
 Try the extensions in your browser with Binder:
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyterlab-contrib/jupyterlab-topbar/main?urlpath=lab)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/sparafina-earthscope/jupyterlab-topbar/main?urlpath=lab)
 
 ## Installation
 
