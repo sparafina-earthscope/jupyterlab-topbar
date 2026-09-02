@@ -9,9 +9,9 @@
         "jupyterlab-extension",
         "logout-button"
     ],
-    "homepage": "https://github.com/jupyterlab-contrib/jupyterlab-topbar",
+    "homepage": "https://github.com/sparafina-earthscope/jupyterlab-topbar",
     "bugs": {
-        "url": "https://github.com/jupyterlab-contrib/jupyterlab-topbar/issues"
+        "url": "https://github.com/sparafina-earthscope/jupyterlab-topbar/issues"
     },
     "license": "BSD-3-Clause",
     "author": {
@@ -26,7 +26,7 @@
     "types": "lib/index.d.ts",
     "repository": {
         "type": "git",
-        "url": "https://github.com/jupyterlab-contrib/jupyterlab-topbar.git"
+        "url": "https://github.com/sparafina-earthscope/jupyterlab-topbar.git"
     },
     "scripts": {
         "build": "jlpm build:lib && jlpm build:labextension:dev",
