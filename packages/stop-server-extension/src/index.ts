@@ -1,6 +1,7 @@
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
+  IRouter,
 } from '@jupyterlab/application';
 
 import '@jupyterlab/application/style/buttons.css';
@@ -12,7 +13,8 @@ const stopServerPluginId = 'jupyterlab-topbar-stop-server:plugin';
 const extension: JupyterFrontEndPlugin<void> = {
   id: stopServerPluginId,
   autoStart: true,
-  activate: async (app: JupyterFrontEnd): Promise<void> => {
+  requires: [IRouter],
+  activate: async (app: JupyterFrontEnd, router: IRouter): Promise<void> => {
     console.log('jupyterlab-topbar-stop-server extension is activated!');
 
     // Get app commands
@@ -24,7 +26,7 @@ const extension: JupyterFrontEndPlugin<void> = {
 
     commands.addCommand(command, {
       label: 'Stop Server',
-      execute: () => {
+      execute: async () => {
         // Delegate to JupyterLab's own "Shut Down" command
         // (@jupyterlab/mainmenu-extension), which already handles the
         // confirmation dialog, session/terminal cleanup, and the
@@ -36,7 +38,8 @@ const extension: JupyterFrontEndPlugin<void> = {
           );
           return;
         }
-        return commands.execute(shutdownCommand);
+        await commands.execute(shutdownCommand);
+        router.navigate('/logout', { hard: true });
       },
     });
   },
