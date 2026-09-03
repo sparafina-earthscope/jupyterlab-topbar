@@ -1,12 +1,7 @@
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
-  IRouter,
 } from '@jupyterlab/application';
-
-import { ServerConnection } from '@jupyterlab/services';
-
-import { URLExt } from '@jupyterlab/coreutils';
 
 import '@jupyterlab/application/style/buttons.css';
 
@@ -17,8 +12,7 @@ const stopServerPluginId = 'jupyterlab-topbar-stop-server:plugin';
 const extension: JupyterFrontEndPlugin<void> = {
   id: stopServerPluginId,
   autoStart: true,
-  requires: [IRouter],
-  activate: async (app: JupyterFrontEnd, router: IRouter): Promise<void> => {
+  activate: async (app: JupyterFrontEnd): Promise<void> => {
     console.log('jupyterlab-topbar-stop-server extension is activated!');
 
     // Get app commands
@@ -26,26 +20,23 @@ const extension: JupyterFrontEndPlugin<void> = {
 
     const namespace = 'jupyterlab-topbar';
     const command = namespace + ':stop-server';
+    const shutdownCommand = 'filemenu:shutdown';
 
     commands.addCommand(command, {
       label: 'Stop Server',
-      execute: async (args: any) => {
-        const settings = ServerConnection.makeSettings();
-        const url = URLExt.join(settings.baseUrl, 'api/shutdown');
-
-        try {
-          // Ask the Jupyter server to shut itself down. The connection
-          // often errors out as the process exits mid-response, which is
-          // expected and not a failure.
-          await ServerConnection.makeRequest(url, { method: 'POST' }, settings);
-        } catch (error) {
+      execute: () => {
+        // Delegate to JupyterLab's own "Shut Down" command
+        // (@jupyterlab/mainmenu-extension), which already handles the
+        // confirmation dialog, session/terminal cleanup, and the
+        // api/shutdown request.
+        // https://jupyterlab.readthedocs.io/en/4.6.x/api/variables/mainmenu-extension.CommandIDs.shutdown.html
+        if (!commands.hasCommand(shutdownCommand)) {
           console.warn(
-            'jupyterlab-topbar-stop-server: shutdown request did not complete cleanly, the server may still have stopped.',
-            error
+            `jupyterlab-topbar-stop-server: '${shutdownCommand}' command is not available.`
           );
+          return;
         }
-
-        router.navigate('/logout', { hard: true });
+        return commands.execute(shutdownCommand);
       },
     });
   },
