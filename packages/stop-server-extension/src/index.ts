@@ -39,10 +39,6 @@ const extension: JupyterFrontEndPlugin<void> = {
           return;
         }
         await commands.execute(shutdownCommand);
-        // The server is already shut down at this point, so suppress any
-        // "leave site?" beforeunload prompt (e.g. from unsaved-changes
-        // handlers) before the hard navigation below.
-        window.onbeforeunload = null;
         router.navigate('/logout', { hard: true });
       },
     });
