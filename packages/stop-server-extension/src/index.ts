@@ -1,6 +1,7 @@
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
+  ILabStatus,
   IRouter,
 } from '@jupyterlab/application';
 
@@ -13,8 +14,12 @@ const stopServerPluginId = 'jupyterlab-topbar-stop-server:plugin';
 const extension: JupyterFrontEndPlugin<void> = {
   id: stopServerPluginId,
   autoStart: true,
-  requires: [IRouter],
-  activate: async (app: JupyterFrontEnd, router: IRouter): Promise<void> => {
+  requires: [ILabStatus, IRouter],
+  activate: async (
+    app: JupyterFrontEnd,
+    status: ILabStatus,
+    router: IRouter
+  ): Promise<void> => {
     console.log('jupyterlab-topbar-stop-server extension is activated!');
 
     // Get app commands
@@ -40,10 +45,22 @@ const extension: JupyterFrontEndPlugin<void> = {
         }
         await commands.execute(shutdownCommand);
 
-        // Prevent the "leave site?" confirmation JupyterLab installs to
-        // guard against losing unsaved work, since the server is already
-        // shutting down.
-        window.onbeforeunload = null;
+        // JupyterLab's own "leave site?" confirmation (@jupyterlab/
+        // application-extension) is registered via
+        // window.addEventListener('beforeunload', ...), not the
+        // window.onbeforeunload property, so setting that property has no
+        // effect on it. It fires whenever ILabStatus.isDirty is true, a
+        // private counter with no public reset method, so clear it
+        // directly -- the server is already stopping, so any "unsaved
+        // changes" warning no longer applies.
+        try {
+          (status as any)._dirtyCount = 0;
+        } catch (error) {
+          console.warn(
+            'jupyterlab-topbar-stop-server: failed to clear dirty state before navigating.',
+            error
+          );
+        }
 
         router.navigate('/logout', { hard: true });
       },
