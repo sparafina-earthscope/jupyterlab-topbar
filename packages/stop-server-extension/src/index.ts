@@ -5,6 +5,8 @@ import {
   IRouter,
 } from '@jupyterlab/application';
 
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+
 import '@jupyterlab/application/style/buttons.css';
 
 import '../style/index.css';
@@ -62,7 +64,23 @@ const extension: JupyterFrontEndPlugin<void> = {
           );
         }
 
-        router.navigate('/logout', { hard: true });
+        // The single-user server we were just talking to is now shutting
+        // down. Its own /logout route just clears the hub-auth cookie and
+        // redirects to the Hub's logout endpoint (see
+        // JupyterHubLogoutHandlerMixin in jupyterhub/singleuser/mixins.py),
+        // but it can only do that while the process is still alive to
+        // answer the request -- which, right after api/shutdown, it may no
+        // longer be. Skip the now-unreliable middleman and go straight to
+        // the Hub's logout endpoint, which is served by the Hub itself (a
+        // separate, still-running process) when available.
+        const hubHost = PageConfig.getOption('hub_host');
+        const hubPrefix = PageConfig.getOption('hub_prefix');
+
+        if (hubPrefix) {
+          window.location.href = hubHost + URLExt.join(hubPrefix, 'logout');
+        } else {
+          router.navigate('/logout', { hard: true });
+        }
       },
     });
   },

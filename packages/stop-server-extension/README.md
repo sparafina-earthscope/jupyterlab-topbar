@@ -5,8 +5,12 @@ Stop Server button for JupyterLab, similar to the [Log Out](../logout-extension)
 Adds a "Stop Server" button to the top bar that triggers JupyterLab's own
 [`filemenu:shutdown`](https://jupyterlab.readthedocs.io/en/4.6.x/api/variables/mainmenu-extension.CommandIDs.shutdown.html)
 command (the same one used by File > Shut Down), which shows a confirmation
-dialog, shuts down running sessions/terminals, calls the server's
-`api/shutdown` endpoint, and reports that the server has stopped.
+dialog, shuts down running sessions/terminals, and calls the server's
+`api/shutdown` endpoint. Once that completes it navigates to the JupyterHub
+Control Panel's logout endpoint (`hub_prefix` + `logout`) directly, rather
+than this server's own `/logout` route, since that route only works while
+the single-user server is still alive to answer it -- which, right after
+shutdown, it may no longer be.
 
 ## Installation
 
