@@ -39,6 +39,12 @@ const extension: JupyterFrontEndPlugin<void> = {
           return;
         }
         await commands.execute(shutdownCommand);
+
+        // Prevent the "leave site?" confirmation JupyterLab installs to
+        // guard against losing unsaved work, since the server is already
+        // shutting down.
+        window.onbeforeunload = null;
+
         router.navigate('/logout', { hard: true });
       },
     });
