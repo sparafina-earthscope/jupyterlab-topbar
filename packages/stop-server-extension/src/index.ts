@@ -1,9 +1,12 @@
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
+  IRouter,
 } from '@jupyterlab/application';
 
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { ServerConnection } from '@jupyterlab/services';
+
+import { URLExt } from '@jupyterlab/coreutils';
 
 import '@jupyterlab/application/style/buttons.css';
 
@@ -14,7 +17,8 @@ const stopServerPluginId = 'jupyterlab-topbar-stop-server:plugin';
 const extension: JupyterFrontEndPlugin<void> = {
   id: stopServerPluginId,
   autoStart: true,
-  activate: async (app: JupyterFrontEnd): Promise<void> => {
+  requires: [IRouter],
+  activate: async (app: JupyterFrontEnd, router: IRouter): Promise<void> => {
     console.log('jupyterlab-topbar-stop-server extension is activated!');
 
     // Get app commands
@@ -25,20 +29,23 @@ const extension: JupyterFrontEndPlugin<void> = {
 
     commands.addCommand(command, {
       label: 'Stop Server',
-      execute: (args: any) => {
-        const hubHost = PageConfig.getOption('hub_host');
-        const hubPrefix = PageConfig.getOption('hub_prefix');
+      execute: async (args: any) => {
+        const settings = ServerConnection.makeSettings();
+        const url = URLExt.join(settings.baseUrl, 'api/shutdown');
 
-        if (!hubPrefix) {
+        try {
+          // Ask the Jupyter server to shut itself down. The connection
+          // often errors out as the process exits mid-response, which is
+          // expected and not a failure.
+          await ServerConnection.makeRequest(url, { method: 'POST' }, settings);
+        } catch (error) {
           console.warn(
-            'jupyterlab-topbar-stop-server: not running under JupyterHub, hub_prefix is not set.'
+            'jupyterlab-topbar-stop-server: shutdown request did not complete cleanly, the server may still have stopped.',
+            error
           );
-          return;
         }
 
-        // Send the user to the Hub Control Panel, where JupyterHub's own
-        // "Stop My Server" button lives.
-        window.location.href = hubHost + URLExt.join(hubPrefix, 'home');
+        router.navigate('/logout', { hard: true });
       },
     });
   },

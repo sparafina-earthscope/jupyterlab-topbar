@@ -1,13 +1,10 @@
 # jupyterlab-topbar-stop-server
 
-Stop Server button for JupyterLab, for use under [JupyterHub](https://jupyterhub.readthedocs.io/).
+Stop Server button for JupyterLab, similar to the [Log Out](../logout-extension) button.
 
-Adds a "Stop Server" button to the top bar that navigates to the JupyterHub
-Control Panel, where JupyterHub's own "Stop My Server" button lives.
-
-The button is always shown, but only does something when running under
-JupyterHub (i.e. when the `hub_prefix` page config option is set) — otherwise
-it logs a console warning and does nothing.
+Adds a "Stop Server" button to the top bar that shuts down the running
+Jupyter server (via its own `api/shutdown` endpoint) and then navigates to
+`/logout`, the same way the Log Out button does.
 
 ## Installation
 
