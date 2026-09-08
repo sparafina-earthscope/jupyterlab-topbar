@@ -5,6 +5,10 @@ import {
   IRouter,
 } from '@jupyterlab/application';
 
+import { Dialog, showDialog } from '@jupyterlab/apputils';
+
+import { ServerConnection } from '@jupyterlab/services';
+
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import '@jupyterlab/application/style/buttons.css';
@@ -25,27 +29,59 @@ const extension: JupyterFrontEndPlugin<void> = {
     console.log('jupyterlab-topbar-stop-server extension is activated!');
 
     // Get app commands
-    const { commands } = app;
+    const { commands, serviceManager } = app;
 
     const namespace = 'jupyterlab-topbar';
     const command = namespace + ':stop-server';
-    const shutdownCommand = 'filemenu:shutdown';
 
     commands.addCommand(command, {
       label: 'Stop Server',
       execute: async () => {
-        // Delegate to JupyterLab's own "Shut Down" command
-        // (@jupyterlab/mainmenu-extension), which already handles the
-        // confirmation dialog, session/terminal cleanup, and the
-        // api/shutdown request.
-        // https://jupyterlab.readthedocs.io/en/4.6.x/api/variables/mainmenu-extension.CommandIDs.shutdown.html
-        if (!commands.hasCommand(shutdownCommand)) {
-          console.warn(
-            `jupyterlab-topbar-stop-server: '${shutdownCommand}' command is not available.`
-          );
+        // Confirm ourselves rather than delegating to JupyterLab's
+        // filemenu:shutdown command: its returned promise resolves the
+        // same way whether the user clicks "Shut Down" or "Cancel" on its
+        // own confirmation dialog, so a caller can't tell them apart and
+        // would end up navigating away even on Cancel.
+        const result = await showDialog({
+          title: 'Stop server?',
+          body: 'This will stop your Jupyter server and log you out. Any unsaved changes will be lost.',
+          buttons: [
+            Dialog.cancelButton(),
+            Dialog.warnButton({ label: 'Stop Server' }),
+          ],
+        });
+
+        if (!result.button.accept) {
           return;
         }
-        await commands.execute(shutdownCommand);
+
+        try {
+          await Promise.all([
+            serviceManager.sessions.shutdownAll(),
+            serviceManager.terminals.shutdownAll(),
+          ]);
+        } catch (error) {
+          console.warn(
+            'jupyterlab-topbar-stop-server: failed to shut down sessions/terminals cleanly.',
+            error
+          );
+        }
+
+        const settings = ServerConnection.makeSettings();
+        try {
+          // The connection often drops as the process exits mid-response;
+          // that's expected and not itself a failure.
+          await ServerConnection.makeRequest(
+            URLExt.join(settings.baseUrl, 'api/shutdown'),
+            { method: 'POST' },
+            settings
+          );
+        } catch (error) {
+          console.warn(
+            'jupyterlab-topbar-stop-server: shutdown request did not complete cleanly, the server may still have stopped.',
+            error
+          );
+        }
 
         // JupyterLab's own "leave site?" confirmation (@jupyterlab/
         // application-extension) is registered via
