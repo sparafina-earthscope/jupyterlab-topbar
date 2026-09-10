@@ -7,10 +7,10 @@ dialog (Cancel truly cancels, unlike delegating to JupyterLab's
 `filemenu:shutdown` command, whose promise resolves the same way on Cancel
 as on confirm), then shuts down running sessions/terminals and calls the
 server's `api/shutdown` endpoint. Once that completes it navigates to the
-JupyterHub Control Panel's logout endpoint (`hub_prefix` + `logout`)
-directly, rather than this server's own `/logout` route, since that route
-only works while the single-user server is still alive to answer it --
-which, right after shutdown, it may no longer be.
+Hub's own logout endpoint (`paths.urls.hubHost` + `paths.urls.hubPrefix` +
+`logout`) directly, rather than this server's own `/logout` route, since
+that route only works while the single-user server is still alive to
+answer it -- which, right after shutdown, it may no longer be.
 
 ## Installation
 

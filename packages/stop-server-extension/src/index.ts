@@ -9,7 +9,7 @@ import { Dialog, showDialog } from '@jupyterlab/apputils';
 
 import { ServerConnection } from '@jupyterlab/services';
 
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { URLExt } from '@jupyterlab/coreutils';
 
 import '@jupyterlab/application/style/buttons.css';
 
@@ -20,11 +20,12 @@ const stopServerPluginId = 'jupyterlab-topbar-stop-server:plugin';
 const extension: JupyterFrontEndPlugin<void> = {
   id: stopServerPluginId,
   autoStart: true,
-  requires: [ILabStatus, IRouter],
+  requires: [ILabStatus, IRouter, JupyterFrontEnd.IPaths],
   activate: async (
     app: JupyterFrontEnd,
     status: ILabStatus,
-    router: IRouter
+    router: IRouter,
+    paths: JupyterFrontEnd.IPaths
   ): Promise<void> => {
     console.log('jupyterlab-topbar-stop-server extension is activated!');
 
@@ -109,8 +110,13 @@ const extension: JupyterFrontEndPlugin<void> = {
         // longer be. Skip the now-unreliable middleman and go straight to
         // the Hub's logout endpoint, which is served by the Hub itself (a
         // separate, still-running process) when available.
-        const hubHost = PageConfig.getOption('hub_host');
-        const hubPrefix = PageConfig.getOption('hub_prefix');
+        //
+        // These come from paths.urls (populated from the hubPrefix/hubHost
+        // page config keys -- @jupyterlab/hub-extension reads the same
+        // way), not PageConfig.getOption('hub_prefix')/('hub_host'), which
+        // are the wrong (snake_case) keys and always read back empty.
+        const hubHost = paths.urls.hubHost || '';
+        const hubPrefix = paths.urls.hubPrefix || '';
 
         if (hubPrefix) {
           window.location.href = hubHost + URLExt.join(hubPrefix, 'logout');
