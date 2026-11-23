@@ -9,18 +9,28 @@ brought back into [jupyterlab-topbar](https://github.com/jtpio/jupyterlab-topbar
 
 ## Prerequisites
 
-- JupyterLab 1.0+
+- JupyterLab 4.x (older releases support JupyterLab 1.x to 3.x, see below)
+- Python 3.9 or later. CI tests 3.10 and 3.13.
 
 ## Installation
 
 ### JupyterLab 4.x
 
 Starting from JupyterLab 4.0, extension can be distributed as a Python package.
-Use version `1.0.0` as other versions are incompatible with JupyterLab 4
+
+| JupyterLab | Version to install |
+| ---------- | ------------------ |
+| 4.6+       | `1.1.1` or later   |
+| 4.0 – 4.5  | `1.0.0` or later   |
 
 ```bash
-pip install jupyterlab-theme-toggler==1.0.0
+pip install "jupyterlab-theme-toggler>=1.1.1"
 ```
+
+Versions before 1.1.1 do not load in JupyterLab 4.6+:
+`jupyter labextension list` marks them incompatible. JupyterLab 4.6 ships
+`@jupyter/react-components` 0.17, and those versions only accept 0.16. 1.1.1
+accepts both, so it works with every JupyterLab 4.x.
 
 ### JupyterLab 2.x and 3.x
 
@@ -40,7 +50,9 @@ jupyter labextension install jupyterlab-theme-toggle
 
 ### JupyterLab 4.x
 
-Note: You will need NodeJS to build the extension package.
+Note: You will need Node.js (20 to 24) to build the extension package. Build
+with JupyterLab 4.0 to 4.5 (`pip install "jupyterlab>=4.0.0,<4.6"`). See
+[Build toolchain](../../README.md#build-toolchain) for why.
 
 The `jlpm` command is JupyterLab's pinned version of
 [yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use

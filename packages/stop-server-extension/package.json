@@ -1,6 +1,6 @@
 {
     "name": "jupyterlab-topbar-stop-server",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "JupyterLab Stop Server Button",
     "keywords": [
         "jupyter",

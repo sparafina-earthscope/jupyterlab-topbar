@@ -17,7 +17,7 @@ Inspired by Gnome Shell Top Bar indicators.
 
 - [jupyterlab-topbar-text](./packages/topbar-text-extension): add and edit custom text
 - [jupyterlab-logout](./packages/logout-extension): add a "Log Out" button
-- [jupyterlab-topbar-stop-server](./packages/stop-server-extension): add a "Stop Server" button that stops the server via the JupyterHub Control Panel
+- [jupyterlab-topbar-stop-server](./packages/stop-server-extension): add a "Stop Server" button that shuts down the server and logs out of JupyterHub, plus a "Version:" label showing the server's `GEOLAB_VERSION`
 - [jupyterlab-theme-toggle](./packages/theme-toggler-extension): switch between the Light and Dark themes
 
 ## Try it online
@@ -25,6 +25,33 @@ Inspired by Gnome Shell Top Bar indicators.
 Try the extensions in your browser with Binder:
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/sparafina-earthscope/jupyterlab-topbar/main?urlpath=lab)
+
+## Requirements and compatibility
+
+- **Python:** 3.9 or later (`requires-python = ">=3.9"`). CI tests Python 3.10
+  and 3.13. Python 3.9 is end-of-life and is no longer tested: GitHub's
+  `ubuntu-latest` runner (Ubuntu 26.04) has no Python 3.9.
+- **JupyterLab:** 4.0 or later, below 5. CI installs each extension into the
+  latest JupyterLab 4.x and checks that it loads.
+
+Extension versions for JupyterLab 4.x:
+
+| Extension                       | Minimum for JupyterLab 4.x            | Tested with JupyterLab 4.6 |
+| ------------------------------- | ------------------------------------- | -------------------------- |
+| `jupyterlab-topbar-text`        | 1.0.0                                 | 1.1.0                      |
+| `jupyterlab-logout`             | 1.0.0                                 | 1.1.0                      |
+| `jupyterlab-topbar-stop-server` | 0.1.0                                 | 0.2.0                      |
+| `jupyterlab-theme-toggler`      | 1.0.0 (**1.1.1** for JupyterLab 4.6+) | 1.1.1                      |
+
+- **`jupyterlab-theme-toggler` before 1.1.1 does not load in JupyterLab 4.6+.**
+  JupyterLab 4.6 ships `@jupyter/react-components` 0.17, and older releases
+  only accepted 0.16, so `jupyter labextension list` marks them incompatible.
+  1.1.1 accepts both, so it works with every JupyterLab 4.x.
+- **`jupyterlab-topbar-stop-server` 0.2.0 adds a Jupyter server extension**
+  (for the "Version:" label) and depends on `jupyter_server` 2.x. `pip install`
+  enables it automatically. Without the server extension, for example when
+  only the front-end files are copied into an environment, the label shows
+  "Version: UNKNOWN" and the Stop Server button still works.
 
 ## Installation
 
@@ -98,13 +125,42 @@ jupyter labextension install jupyterlab-topbar-extension \
 
 ## Development
 
-Note: You will need NodeJS to build the extension package.
+### Build toolchain
+
+- **Node.js:** 20 to 24 (CI uses 24, Binder uses 20). The repository-wide
+  `lerna` scripts (`jlpm run build:prod` at the repository root) fail on
+  Node.js 26. Building inside a single package still works there.
+- **JupyterLab for building: 4.0 to 4.5.** Build the extensions with
+  `pip install "jupyterlab>=4.0.0,<4.6"`. The built extensions still run in
+  JupyterLab 4.6 and later.
+
+  JupyterLab 4.6 builds extensions with a new tool, `jupyter_builder`, which
+  needs the `@jupyterlab/core-meta` package. These packages use the older
+  `@jupyterlab/builder` (a devDependency), which doesn't install it, so
+  `jupyter_builder` downloads it from GitHub during every build. That download
+  fails often (timeouts, rate limits) with errors such as
+  `Could not resolve @jupyterlab/core-meta for requested version '4.0.x'`.
+  The build pin is set in three places, which should stay in sync:
+
+  - `[build-system] requires` in each `packages/*/pyproject.toml`, used by
+    `pip install .` and `python -m build`
+  - each package's `[tool.jupyter-releaser.hooks]` in its `pyproject.toml`
+  - the `before-build-npm` hook in the root `package.json`
+
+  Moving to `@jupyter/builder` would remove the download, but it builds
+  against JupyterLab 4.6 metadata, which could stop the extensions loading in
+  older JupyterLab 4.x versions. Check that before switching.
+
+### Development install
 
 The `jlpm` command is JupyterLab's pinned version of
 [yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
 `yarn` or `npm` in lieu of `jlpm` below.
 
 ```bash
+# Create an environment with a build-compatible JupyterLab and Node.js
+conda create -n topbar-dev -c conda-forge python=3.12 "jupyterlab>=4.0.0,<4.6" nodejs=24
+conda activate topbar-dev
 # Clone the repo to your local environment
 # Change directory into the package that we want to develop
 cd packages/<extension_name>
