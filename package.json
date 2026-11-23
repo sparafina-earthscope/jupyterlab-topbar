@@ -71,7 +71,7 @@
         "python ./scripts/bump-top-level-package.py"
       ],
       "before-build-npm": [
-        "pip install 'jupyterlab>=4.0.0,<5'",
+        "pip install 'jupyterlab>=4.0.0,<4.6'",
         "jlpm",
         "jlpm run build:prod"
       ]
