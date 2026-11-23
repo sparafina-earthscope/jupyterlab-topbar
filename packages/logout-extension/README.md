@@ -26,7 +26,9 @@ pip install jupyterlab-logout==0.5.0
 
 ### Development install
 
-Note: You will need NodeJS to build the extension package.
+Note: You will need Node.js (20 to 24) to build the extension package. Build
+with JupyterLab 4.0 to 4.5 (`pip install "jupyterlab>=4.0.0,<4.6"`). See
+[Build toolchain](../../README.md#build-toolchain) for why.
 
 The `jlpm` command is JupyterLab's pinned version of
 [yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use

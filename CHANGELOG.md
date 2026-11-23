@@ -1,5 +1,38 @@
 # Changelog
 
+## jupyterlab-topbar-stop-server 0.2.0, jupyterlab-theme-toggler 1.1.1
+
+### Enhancements made
+
+- `jupyterlab-topbar-stop-server`: show `Version: <GEOLAB_VERSION>` in the top
+  bar before the Stop Server button (`Version: UNKNOWN` if the variable is
+  unset or the lookup fails). This adds a Jupyter server extension, enabled
+  automatically by `pip install`, that serves the value at
+  `jupyterlab-topbar-stop-server/geolab-version`. It adds a dependency on
+  `jupyter_server` 2.x.
+
+### Bugs fixed
+
+- `jupyterlab-theme-toggler`: accept `@jupyter/react-components` 0.16 or 0.17.
+  Earlier versions don't load in JupyterLab 4.6+, which ships 0.17.
+
+### Backwards compatibility
+
+- All extensions still support JupyterLab 4.0 or later, below 5, at runtime.
+- `jupyterlab-topbar-stop-server` 0.2.0: if only the front-end files are
+  installed, without the server extension, the label shows `Version: UNKNOWN`.
+  The Stop Server button is unchanged.
+
+### Maintenance and upkeep improvements
+
+- Build with JupyterLab 4.0 to 4.5 (`build-system.requires` and the
+  jupyter-releaser `before-build-npm` hooks). JupyterLab 4.6's
+  `jupyter_builder` downloads `@jupyterlab/core-meta` from GitHub for
+  packages that use `@jupyterlab/builder`, and that download fails
+  intermittently. See [Build toolchain](README.md#build-toolchain).
+- CI: test packaging on Python 3.10 and 3.13. `ubuntu-latest` (Ubuntu 26.04)
+  has no Python 3.9, which is end-of-life. `requires-python` stays `>=3.9`.
+
 <!-- <START NEW CHANGELOG ENTRY> -->
 
 ## 1.1.0

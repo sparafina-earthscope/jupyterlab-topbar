@@ -5,11 +5,17 @@ import {
   IRouter,
 } from '@jupyterlab/application';
 
-import { Dialog, showDialog } from '@jupyterlab/apputils';
+import {
+  Dialog,
+  IToolbarWidgetRegistry,
+  showDialog,
+} from '@jupyterlab/apputils';
 
 import { ServerConnection } from '@jupyterlab/services';
 
 import { URLExt } from '@jupyterlab/coreutils';
+
+import { Widget } from '@lumino/widgets';
 
 import '@jupyterlab/application/style/buttons.css';
 
@@ -17,17 +23,73 @@ import '../style/index.css';
 
 const stopServerPluginId = 'jupyterlab-topbar-stop-server:plugin';
 
+const GEOLAB_VERSION_CLASS = 'jp-TopBar-GeolabVersion';
+
+/**
+ * Ask this extension's server handler for the server's GEOLAB_VERSION
+ * environment variable (the browser can't read it directly). Resolves to
+ * null if it's unset or the request fails.
+ */
+async function fetchGeolabVersion(): Promise<string | null> {
+  const settings = ServerConnection.makeSettings();
+  try {
+    const response = await ServerConnection.makeRequest(
+      URLExt.join(
+        settings.baseUrl,
+        'jupyterlab-topbar-stop-server',
+        'geolab-version'
+      ),
+      { method: 'GET' },
+      settings
+    );
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json();
+    return data.geolab_version || null;
+  } catch (error) {
+    console.warn(
+      'jupyterlab-topbar-stop-server: failed to fetch GEOLAB_VERSION.',
+      error
+    );
+    return null;
+  }
+}
+
 const extension: JupyterFrontEndPlugin<void> = {
   id: stopServerPluginId,
   autoStart: true,
-  requires: [ILabStatus, IRouter, JupyterFrontEnd.IPaths],
+  requires: [
+    ILabStatus,
+    IRouter,
+    JupyterFrontEnd.IPaths,
+    IToolbarWidgetRegistry,
+  ],
   activate: async (
     app: JupyterFrontEnd,
     status: ILabStatus,
     router: IRouter,
-    paths: JupyterFrontEnd.IPaths
+    paths: JupyterFrontEnd.IPaths,
+    toolbarRegistry: IToolbarWidgetRegistry
   ): Promise<void> => {
     console.log('jupyterlab-topbar-stop-server extension is activated!');
+
+    // Show GEOLAB_VERSION just before the Stop Server button. The label stays
+    // hidden until the lookup finishes, then shows UNKNOWN if the variable
+    // is unset/empty or the lookup failed.
+    const versionNode = document.createElement('div');
+    versionNode.style.display = 'none';
+    toolbarRegistry.addFactory('TopBar', 'geolab-version', () => {
+      const versionWidget = new Widget({ node: versionNode });
+      versionWidget.addClass(GEOLAB_VERSION_CLASS);
+      return versionWidget;
+    });
+    void fetchGeolabVersion().then((version) => {
+      const shown = version || 'UNKNOWN';
+      versionNode.textContent = `Version: ${shown}`;
+      versionNode.title = `GEOLAB_VERSION: ${shown}`;
+      versionNode.style.display = '';
+    });
 
     // Get app commands
     const { commands, serviceManager } = app;

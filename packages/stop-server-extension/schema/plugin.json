@@ -4,6 +4,10 @@
   "jupyter.lab.toolbars": {
     "TopBar": [
       {
+        "name": "geolab-version",
+        "rank": 139
+      },
+      {
         "name": "stop-server",
         "command": "jupyterlab-topbar:stop-server",
         "rank": 140

@@ -22,6 +22,17 @@ jobs:
           - logout
           - theme-toggler
           - topbar-text
+          - stop-server
+        # Lab extension name, as shown by `jupyter labextension list`
+        include:
+          - extension: logout
+            labext: jupyterlab-logout
+          - extension: theme-toggler
+            labext: jupyterlab-theme-toggler
+          - extension: topbar-text
+            labext: jupyterlab-topbar-text
+          - extension: stop-server
+            labext: jupyterlab-topbar-stop-server
 
     steps:
       - name: Checkout
@@ -46,6 +57,13 @@ jobs:
           python -m pip install .
 
           jupyter labextension list
-          jupyter labextension list 2>&1 | grep -ie "jupyterlab-${{ matrix.extension }}.*OK"
+          jupyter labextension list 2>&1 | grep -ie "${{ matrix.labext }}.*OK"
 
           python -m jupyterlab.browser_check
+
+      - name: Check the server extension
+        if: matrix.extension == 'stop-server'
+        run: |
+          set -eux
+          jupyter server extension list
+          jupyter server extension list 2>&1 | grep -ie "jupyterlab_topbar_stop_server.*OK"

@@ -1,6 +1,6 @@
 {
     "name": "jupyterlab-theme-toggler",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "JupyterLab Toolbar Theme Toggler",
     "keywords": [
         "jupyter",
@@ -55,7 +55,7 @@
         "watch:src": "tsc -w --sourceMap"
     },
     "dependencies": {
-        "@jupyter/react-components": "^0.16.0",
+        "@jupyter/react-components": "^0.16.0 || ^0.17.0",
         "@jupyterlab/application": "^4.0.0",
         "@jupyterlab/apputils": "^4.0.0",
         "react": "^18.2.0"
