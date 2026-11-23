@@ -86,7 +86,7 @@ const extension: JupyterFrontEndPlugin<void> = {
     });
     void fetchGeolabVersion().then((version) => {
       const shown = version || 'UNKNOWN';
-      versionNode.textContent = `GeoLab ${shown}`;
+      versionNode.textContent = `Version: ${shown}`;
       versionNode.title = `GEOLAB_VERSION: ${shown}`;
       versionNode.style.display = '';
     });
