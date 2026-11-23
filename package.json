@@ -7,9 +7,9 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "lerna run --parallel build",
-    "build-py": "rimraf dist && mkdir -p dist && lerna run --parallel clean:all && lerna exec --concurrency 4 -- python -m build && lerna exec --concurrency 4 -- mv ./dist/jupyterlab* ../../dist/",
-    "build:prod": "lerna run --parallel build:prod",
+    "build": "lerna run --concurrency 1 build",
+    "build-py": "rimraf dist && mkdir -p dist && lerna run --parallel clean:all && lerna exec --concurrency 1 -- python -m build && lerna exec --concurrency 4 -- mv ./dist/jupyterlab* ../../dist/",
+    "build:prod": "lerna run --concurrency 1 build:prod",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
     "install-ext": "lerna run build:labextension:dev",
